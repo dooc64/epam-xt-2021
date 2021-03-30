@@ -14,19 +14,18 @@ namespace TEXT_ANALYSIS
             Console.Clear();
             Console.Write("Ваш текст анализируется, пожалуйста подождите");
 
-            Thread.Sleep(1000);
-            Console.Write(".");
-            Thread.Sleep(1000);
-            Console.Write(".");
-            Thread.Sleep(1000);
-            Console.Write(".");
+            for (int i = 0; i < 3; i++)
+            {
+                Thread.Sleep(1000);
+                Console.Write(".");
+            }
 
             Console.WriteLine();
 
             TextHandler worker = new TextHandler(text);
-            worker.Separator(worker.current);
-            worker.WordsCount();
-            worker.ShowReult();
+            string[] cleanText = worker.Separator();
+            Dictionary<string, int> integerOfWords = worker.WordsCount(cleanText);
+            worker.ShowReult(integerOfWords, cleanText);
             Console.ReadLine();
         }
     }
@@ -36,20 +35,18 @@ namespace TEXT_ANALYSIS
     public class TextHandler
     {
         private char[] separators = new char[] { ' ', ';', ',', ':', '.', '!', '?', '-', '"' };
-        private Dictionary<string, int> _popularWords = new Dictionary<string, int>();
-        
-        string[] result;
-        public string current;
+        private Dictionary<string, int> _popularWords = new Dictionary<string, int>(); 
+        private string currentString;
 
         public TextHandler(string text)
         {
-            current = text;
+            currentString = text;
         }
 
-        public void Separator(string text)
+        public string[] Separator()
         {
-           var lowerText = text.ToLower();
-           result  = lowerText.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+           var lowerText = currentString.ToLower();
+           return lowerText.Split(separators, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void Show(string[] text)
@@ -60,14 +57,14 @@ namespace TEXT_ANALYSIS
             }
         }
 
-        public void ShowReult()
+        public void ShowReult(Dictionary<string, int> numberOfWords, string[] fullText)
         {
-            _popularWords.OrderBy(x => x.Value);
+            numberOfWords.OrderBy(x => x.Value);
             Console.WriteLine("----------------------------");
             Console.WriteLine("Наиболее повторяющиеся слова");
             Console.WriteLine("----------------------------");
 
-            foreach (var item in _popularWords)
+            foreach (var item in numberOfWords)
             {
                 if(item.Value >= 5)
                     Console.WriteLine($"Слово {item.Key} встречается {item.Value} раз");
@@ -77,39 +74,40 @@ namespace TEXT_ANALYSIS
             Console.WriteLine("Менее встречающиеся слова");
             Console.WriteLine("----------------------------");
 
-            foreach (var item in _popularWords)
+            foreach (var item in numberOfWords)
             {
                 if (item.Value <= 2)
                     Console.WriteLine($"Слово {item.Key} встречается {item.Value} раз");
             }
             Console.WriteLine("----------------------------");
 
-            int uniqueWords = _popularWords.Where(x => x.Value == 1).Count();
+            int uniqueWords = numberOfWords.Where(x => x.Value == 1).Count();
 
-            if (uniqueWords > result.Length * 0.3)
+            if (uniqueWords >= fullText.Length * 0.3)
             {
                 Console.WriteLine($"Вы использовали {uniqueWords} уникальных слов, вы молодец!");
             }
-            else if(uniqueWords < result.Length* 0.3)
+            else if(uniqueWords < fullText.Length* 0.3)
             {
                 Console.WriteLine("Слишком часто повторяетесь, сударь.");
             }
 
         }
 
-        public void WordsCount()
+        public Dictionary<string, int> WordsCount(string[] text)
         {
-            for (int word = 0; word < result.Length; word++)
+            for (int word = 0; word < text.Length; word++)
             {
-                if (_popularWords.ContainsKey(result[word]))
+                if (_popularWords.ContainsKey(text[word]))
                 {
-                    _popularWords[result[word]]++;
+                    _popularWords[text[word]]++;
                 }
                 else
                 {
-                    _popularWords.Add(result[word], 1);
+                    _popularWords.Add(text[word], 1);
                 }
             }
+            return _popularWords;
         }
     }
 }
