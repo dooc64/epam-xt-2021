@@ -10,7 +10,7 @@ namespace DYNAMIC_ARRAY
     {
         static void Main(string[] args)
         {
-
+            
         }
     }
 
@@ -28,7 +28,7 @@ namespace DYNAMIC_ARRAY
             {
                 return _capacity;
             }
-            set
+            private set
             {
                 if (value > 0)
                 {
@@ -47,17 +47,12 @@ namespace DYNAMIC_ARRAY
 
         public DynamicArray(int length)
         {
-            if(length > 0)
-            { 
-                Capacity = length;
-                mass = new T[Capacity];
-            }
-            else
+            if(length < 0)
             {
-                Console.WriteLine("The capacity must be greater than 0");
-                Console.ReadLine();
-                Process.GetCurrentProcess().Kill();
+                throw new ArgumentOutOfRangeException();
             }
+            Capacity = length;
+            mass = new T[Capacity];
         }
 
         public DynamicArray(IEnumerable<T> collection) : this(collection.Count())
@@ -72,45 +67,46 @@ namespace DYNAMIC_ARRAY
 
         public T this[int index]
         {
-            get 
+            get
             {
-                if((index < -_length) || (index >= _length))
+                if ((index < 0) || (index >= _length))
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                else if(index < 0)
-                {
-                    return mass[_length + index];
-                }
-                else
-                {
-                    return mass[index];
-                }
+
+                return mass[index];
+
             }
-            set 
+            set
             {
-                if ((index < -_length) || (index >= _length))
+                if ((index < 0) || (index >= _length))
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                else if (index < 0)
-                {
-                    mass[_length + index] = value;
-                }
-                else
-                {
-                    mass[index] = value;
-                }
+
+                mass[index] = value;
+
             }
+        }
+
+        public void TryChangeCapacity(int newLength)
+        {
+            if(newLength <= _capacity)
+            {
+                return;
+            }
+
+            while (_capacity < newLength)
+            {
+                _capacity *= 2;
+            }
+
+            Array.Resize(ref mass, _capacity);
         }
 
         public void Add(T objct)
         {
-            if (_capacity == _length)
-            {
-                _capacity *= 2;
-                Array.Resize(ref mass, _capacity);
-            }
+            TryChangeCapacity(_length + 1);
 
             mass[_length] = objct;
             _length++;
@@ -118,28 +114,12 @@ namespace DYNAMIC_ARRAY
 
         public void AddRange(IEnumerable<T> collection)
         {
-            if(collection != null)
-            {
-                bool needMoreSize = false;
+            int newLength = _length + collection.Count();
 
-                while(_capacity < collection.Count() + _length)
-                {
-                    _capacity *= 2;
-                    needMoreSize = true;
-                }
+            TryChangeCapacity(newLength);
 
-                if (needMoreSize)
-                {
-                    Array.Resize(ref mass, _capacity);
-                }
-
-                collection.ToArray().CopyTo(mass, _length);
-                _length += collection.Count();
-            }
-            else
-            {
-                Console.WriteLine("Вы пытаетесь добавить пустые элементы!");
-            }
+            collection.ToArray().CopyTo(mass, _length);
+            _length = newLength;
         }
 
         public bool Remove(T item)
@@ -174,11 +154,7 @@ namespace DYNAMIC_ARRAY
             {
                 try
                 {
-                    if(_capacity == _length)
-                    {
-                        _capacity *= 2;
-                        Array.Resize(ref mass, _capacity);
-                    }
+                    TryChangeCapacity(_length + 1);
 
                     Array.Copy(mass, position, mass, position + 1, _length - position);
                     mass[position] = item;
