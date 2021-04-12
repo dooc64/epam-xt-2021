@@ -13,24 +13,32 @@ namespace SUPER_STRING
 
     public static class StringChecker
     {
-        public static void LanguageChecker(this string words)
+        public static Language LanguageChecker(this string words)
         {
             if (!Regex.IsMatch(words, @"^[а-я][ё]$", RegexOptions.IgnoreCase))
             {
-                Console.WriteLine("Текст написан только на кирилице");
+                return Language.Russian;
             }
             else if (Regex.IsMatch(words, @"^[a-z]", RegexOptions.IgnoreCase))
             {
-                Console.WriteLine("В строке только латинские буквы");
+                return Language.English;
             }
             else if (Regex.IsMatch(words, @"^\d+$"))
             {
-                Console.WriteLine("В строке только цифры");
+                return Language.Number;
             }
             else
             {
-                Console.WriteLine("Текст имеет разные символы и языки");
+                return Language.Mixed;
             }
         }
+    }
+
+    public enum Language
+    {
+        Russian,
+        English,
+        Number,
+        Mixed
     }
 }

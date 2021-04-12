@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace SUPER_ARRAY
 {
-    public delegate int IntDelegate(int value);
     public static class ArrayExtension
     {
         public static void UpadteMass<T>(this T[] mass, Func<T, T> func)
