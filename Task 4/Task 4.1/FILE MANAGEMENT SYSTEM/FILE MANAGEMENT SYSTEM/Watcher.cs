@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace FILE_MANAGEMENT_SYSTEM
 {
     class Watcher
     {
         private string _pathToBackup;
-        public string path = @"C:\Users\scout\Desktop\fortask";
+        private string _path;
         public string PathToBackup { get => _pathToBackup; }
         public FileSystemWatcher watcher;
         public Dictionary<int, string> backupFolder = new Dictionary<int, string>();
@@ -18,6 +17,7 @@ namespace FILE_MANAGEMENT_SYSTEM
         {
             watcher = new FileSystemWatcher(pathToFolder, "*.txt");
             _pathToBackup = pathToBackupFolder;
+            _path = pathToFolder;
         }
 
         public void Activate()
@@ -63,7 +63,7 @@ namespace FILE_MANAGEMENT_SYSTEM
             }
         }
 
-        public void DelFolder(string DelFileFolder)
+        public void DeleteFolder(string DelFileFolder)
         {
             Directory.CreateDirectory(DelFileFolder);
             string[] files = Directory.GetFiles(DelFileFolder);
@@ -83,6 +83,18 @@ namespace FILE_MANAGEMENT_SYSTEM
             foreach (var item in backupFolder)
             {
                 Console.WriteLine(item.Key + "." + item.Value);
+            }
+        }
+
+        public void StartBackup()
+        {
+            RefreshFolders();
+            int versionChoice = int.Parse(Console.ReadLine());
+            DeleteFolder(_path);
+            foreach (var item in fullnameBackupFolder)
+            {
+                if (versionChoice == item.Key)
+                    CopyFiles(item.Value, _path);
             }
         }
     }
