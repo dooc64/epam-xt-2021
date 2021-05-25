@@ -1,0 +1,17 @@
+*{
+    padding-left: 0px;
+}
+
+.background{
+    width: 200px;
+    background-color: #f4d984;
+    border: 1px solid #333;
+    border-radius: 10px;
+    box-shadow: 5px 5px 0 0 darkRed;
+}
+
+ul{
+    text-align: left;
+    color: rgb(105, 27, 0);
+    padding-left: 5px;
+}

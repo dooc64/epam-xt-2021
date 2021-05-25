@@ -1,0 +1,40 @@
+.password,.send-button,.email{
+    margin-left: 10px;
+}
+
+h1{
+    padding-top: 15px;
+    margin: 0 0 15px;
+}
+
+.background{
+    width: 500px;
+    height: 350px;
+    color: white;
+    background-color: #0690cf;
+    border: 3px solid #0075B2;
+}
+
+.password{
+    display: inline-block;
+}
+
+.again{
+    margin-left: 100px;
+}
+
+button{
+    float: left;
+    background-color: #ffdf7f;
+    height: 25px;
+    border: 0;
+}
+
+hr{
+    color: white;
+}
+
+.send-button{
+    margin-top: 25px;
+    display: flex;
+}
