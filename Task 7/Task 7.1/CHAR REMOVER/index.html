@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAR REMOVER</title>
+</head>
+<body>
+    
+</body>
+<script>
+    function charRemover(a){
+    a = a.toLowerCase();
+    uArray = a.split('');
+    for(let i = 0; i < uArray.length; i++){
+        for(let y = uArray.length; y > i; y--){
+            if(uArray[i] == uArray[y])
+                uArray.splice(i, 1);
+        }
+    }
+    return uArray;
+}
+</script>
+</html>
